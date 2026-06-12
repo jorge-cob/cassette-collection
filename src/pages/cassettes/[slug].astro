@@ -1,0 +1,25 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const cassettes = await getCollection('cassettes');
+  return cassettes.map((cassette) => ({
+    params: { slug: cassette.id },
+    props: { cassette },
+  }));
+}
+
+const { cassette } = Astro.props;
+const { Content } = await render(cassette);
+---
+
+<Layout title={cassette.data.title}>
+  <main class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold tracking-tight">{cassette.data.title}</h1>
+    <p class="text-neutral-400">{cassette.data.artist} · {cassette.data.year}</p>
+    <article class="mt-6 prose prose-invert">
+      <Content />
+    </article>
+  </main>
+</Layout>
