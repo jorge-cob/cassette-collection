@@ -55,7 +55,6 @@ describe('content.config.ts – schema fields', () => {
     'title',
     'artist',
     'year',
-    'label',
     'genres',
     'tapeType',
     'aesthetics',
@@ -84,14 +83,12 @@ describe('content.config.ts – schema fields', () => {
     expect(source).toContain('Rescued (Needs Cleaning)');
   });
 
-  it('schema declares all four shelf sections', () => {
-    expect(source).toContain('shelf-1-rogues');
-    expect(source).toContain('shelf-2-olympus');
-    expect(source).toContain('shelf-3-gourmet');
-    expect(source).toContain('shelf-4-heavy-rotation');
-  });
-
-  it('schema declares all pending task values', () => {
+  it('schema declares shelving structure with flexible classifications', () => {
+    expect(source).toContain('shelving');
+    expect(source).toContain('physical');
+    expect(source).toContain('byGenre');
+    expect(source).toContain('byArtist');
+    });  it('schema declares all pending task values', () => {
     const tasks = [
       'create-labels',
       'create-jcard',

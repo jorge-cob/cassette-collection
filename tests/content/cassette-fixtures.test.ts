@@ -55,9 +55,8 @@ const cassetteFrontmatterSchema = z.object({
   title: z.string().min(1),
   artist: z.string().min(1),
   year: z.number().int().gte(1900).lte(new Date().getFullYear() + 1),
-  label: z.string().min(1),
   tapeType: z.enum(['Type I', 'Type II', 'Type IV']),
-  originType: z.enum(['Original', 'Recorded from Scratch', 'Transplant / Hi-Fi'])
+  originType: z.enum(['Original', 'Recorded from Scratch', 'Transplant'])
 });
 
 // ─── Helper ───────────────────────────────────────────────────────────────────
@@ -114,7 +113,7 @@ describe('cassette fixture files', () => {
         expect([
           'Original',
           'Recorded from Scratch',
-          'Transplant / Hi-Fi'
+          'Transplant'
         ]).toContain(fm.originType);
       });
 

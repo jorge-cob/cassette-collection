@@ -12,8 +12,19 @@ const cassettesCollection = defineCollection({
     artist: z.string(),
     year: z.number(),
 
-    label: z.string(),
+    recordLabel: z.string().optional(),
     catalogNumber: z.string().optional(),
+
+    physicalLabels: z.object({
+      sideA: z.object({
+        text: z.string().optional(),
+        image: z.string().optional()
+      }).optional(),
+      sideB: z.object({
+        text: z.string().optional(),
+        image: z.string().optional()
+      }).optional()
+    }).optional(),
 
     genres: z.array(z.string()),
 
@@ -42,8 +53,17 @@ const cassettesCollection = defineCollection({
     originType: z.enum([
       'Original',
       'Recorded from Scratch',
-      'Transplant / Hi-Fi'
+      'Transplant'
     ]),
+
+    transplantDetails: z.object({
+      tapeSource: z.enum([
+        'Used/Old Tape',
+        'New Blank Tape'
+      ]),
+      recordedOver: z.boolean().default(false),
+      notes: z.string().optional()
+    }).optional(),
 
     isCustomArt: z.boolean().default(false),
 
@@ -55,12 +75,21 @@ const cassettesCollection = defineCollection({
       'Rescued (Needs Cleaning)'
     ]).default('Mint Condition'),
 
-    shelfSection: z.enum([
-      'shelf-1-rogues',
-      'shelf-2-olympus',
-      'shelf-3-gourmet',
-      'shelf-4-heavy-rotation'
-    ]).optional(),
+    shelving: z.object({
+      physical: z.object({
+        name: z.string(),
+        shelf: z.string().optional(),
+        position: z.number().optional()
+      }).optional(),
+      byGenre: z.string().optional(),
+      byArtist: z.string().optional(),
+      byYear: z.string().optional(),
+      byMood: z.string().optional(),
+      byCondition: z.string().optional(),
+      custom1: z.string().optional(),
+      custom2: z.string().optional(),
+      custom3: z.string().optional()
+    }).optional(),
 
     isDonor: z.boolean().default(false),
 

@@ -44,13 +44,28 @@ const cassetteSchema = z.object({
   title: z.string(),
   artist: z.string(),
   year: z.number(),
-  label: z.string(),
+  recordLabel: z.string().optional(),
   catalogNumber: z.string().optional(),
+  physicalLabels: z.object({
+    sideA: z.object({
+      text: z.string().optional(),
+      image: z.string().optional()
+    }).optional(),
+    sideB: z.object({
+      text: z.string().optional(),
+      image: z.string().optional()
+    }).optional()
+  }).optional(),
   genres: z.array(z.string()),
   tapeType: z.enum(['Type I', 'Type II', 'Type IV']),
   aesthetics: aestheticsSchema,
   media: mediaSchema,
-  originType: z.enum(['Original', 'Recorded from Scratch', 'Transplant / Hi-Fi']),
+  originType: z.enum(['Original', 'Recorded from Scratch', 'Transplant']),
+  transplantDetails: z.object({
+    tapeSource: z.enum(['Used/Old Tape', 'New Blank Tape']),
+    recordedOver: z.boolean().default(false),
+    notes: z.string().optional()
+  }).optional(),
   isCustomArt: z.boolean().default(false),
   condition: z.enum([
     'Excellent',
@@ -59,12 +74,21 @@ const cassetteSchema = z.object({
     'Missing J-Card',
     'Rescued (Needs Cleaning)'
   ]).default('Mint Condition'),
-  shelfSection: z.enum([
-    'shelf-1-rogues',
-    'shelf-2-olympus',
-    'shelf-3-gourmet',
-    'shelf-4-heavy-rotation'
-  ]).optional(),
+  shelving: z.object({
+    physical: z.object({
+      name: z.string(),
+      shelf: z.string().optional(),
+      position: z.number().optional()
+    }).optional(),
+    byGenre: z.string().optional(),
+    byArtist: z.string().optional(),
+    byYear: z.string().optional(),
+    byMood: z.string().optional(),
+    byCondition: z.string().optional(),
+    custom1: z.string().optional(),
+    custom2: z.string().optional(),
+    custom3: z.string().optional()
+  }).optional(),
   isDonor: z.boolean().default(false),
   tags: z.array(z.string()),
   pendingTasks: z.array(z.enum([
@@ -86,7 +110,6 @@ const minimalValidCassette = {
   title: 'Loveless',
   artist: 'My Bloody Valentine',
   year: 1991,
-  label: 'Creation Records',
   genres: ['Shoegaze', 'Alternative Rock'],
   tapeType: 'Type II' as const,
   aesthetics: { shellColor: 'white' },
@@ -118,10 +141,7 @@ describe('cassette schema – required fields', () => {
     expect(cassetteSchema.safeParse(rest).success).toBe(false);
   });
 
-  it('fails when label is missing', () => {
-    const { label: _label, ...rest } = minimalValidCassette;
-    expect(cassetteSchema.safeParse(rest).success).toBe(false);
-  });
+  // recordLabel is now optional, removed this test
 
   it('fails when genres is missing', () => {
     const { genres: _genres, ...rest } = minimalValidCassette;
@@ -171,7 +191,7 @@ describe('cassette schema – tapeType enum', () => {
 // ─── originType enum ──────────────────────────────────────────────────────────
 
 describe('cassette schema – originType enum', () => {
-  it.each(['Original', 'Recorded from Scratch', 'Transplant / Hi-Fi'] as const)(
+  it.each(['Original', 'Recorded from Scratch', 'Transplant'] as const)(
     'accepts originType "%s"',
     (originType) => {
       expect(cassetteSchema.safeParse({ ...minimalValidCassette, originType }).success).toBe(true);
@@ -213,26 +233,31 @@ describe('cassette schema – condition', () => {
 
 // ─── shelfSection enum (optional) ────────────────────────────────────────────
 
-describe('cassette schema – shelfSection', () => {
+describe('cassette schema – shelving', () => {
   it('is absent when not provided', () => {
     const result = cassetteSchema.safeParse(minimalValidCassette);
     expect(result.success).toBe(true);
-    if (result.success) expect(result.data.shelfSection).toBeUndefined();
+    if (result.success) expect(result.data.shelving).toBeUndefined();
   });
 
-  it.each([
-    'shelf-1-rogues',
-    'shelf-2-olympus',
-    'shelf-3-gourmet',
-    'shelf-4-heavy-rotation'
-  ] as const)('accepts shelfSection "%s"', (shelfSection) => {
-    expect(cassetteSchema.safeParse({ ...minimalValidCassette, shelfSection }).success).toBe(true);
+  it('accepts shelving with physical.name', () => {
+    const result = cassetteSchema.safeParse({
+      ...minimalValidCassette,
+      shelving: { physical: { name: 'Trap Shelf' } }
+    });
+    expect(result.success).toBe(true);
   });
 
-  it('rejects an unknown shelfSection value', () => {
-    expect(
-      cassetteSchema.safeParse({ ...minimalValidCassette, shelfSection: 'shelf-5-unknown' }).success
-    ).toBe(false);
+  it('accepts multiple classification systems', () => {
+    const result = cassetteSchema.safeParse({
+      ...minimalValidCassette,
+      shelving: {
+        physical: { name: 'Trap Shelf' },
+        byGenre: 'Trap',
+        byArtist: 'Cecilio G'
+      }
+    });
+    expect(result.success).toBe(true);
   });
 });
 
