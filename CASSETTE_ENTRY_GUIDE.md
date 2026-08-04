@@ -1,5 +1,50 @@
 # 📼 Cassette Entry Guide
 
+Note: The cassette frontmatter now follows a structured schema with the main sections: physicalProperties, recordingContent, artwork, history, tasks, location and metadata. Keep title, artist and year at the top level for compatibility.
+
+Minimal example (recommended):
+
+```yaml
+---
+title: "Cassette Title"
+artist: "Artist Name"
+year: 2024
+
+physicalProperties:
+  tapeType: "Type I"
+  shell:
+    color: "Black"
+
+recordingContent:
+  type: "mixtape"
+  sides:
+    A: []
+    B: []
+
+artwork:
+  jcard:
+    status: "missing"
+  labels:
+    sideA:
+      text: ""
+      image: ""
+    sideB:
+      text: ""
+      image: ""
+
+tasks: []
+
+location:
+  physical:
+    shelf: "My Shelf"
+
+metadata:
+  genres: ["Electronic"]
+  tags: ["demo"]
+---
+```
+
+
 Quick reference for adding cassettes to your library.
 
 ## File Format

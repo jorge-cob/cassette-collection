@@ -41,3 +41,21 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+
+## Data model (summary)
+
+This project uses a structured cassette schema designed for a physical cassette collection. The key sections in cassette frontmatter are:
+
+- physicalProperties: brand, model, tapeType, shell (color, transparency, specialFeatures), condition, notes
+- recordingContent: type (original, album-copy, mixtape, personal-recording, compilation) and sides (A/B) with items per side (artist, title, type, notes, duration)
+- artwork: jcard (status/images/text), labels (sideA/sideB with text/image)
+- history: chronological modifications and restorations
+- tasks: per-cassette tasks with type and status
+- location: physical shelf/box/position and flexible virtualCollections
+- metadata: genres, tags, recordLabel, catalogNumber, notes
+
+Top-level: title, artist and year remain as top-level fields for compatibility with existing pages.
+
+This README is a lightweight reference; see CASSETTE_ENTRY_GUIDE.md for examples and templates.
+

@@ -2,73 +2,73 @@
 title: "Custom Mix Vol. 1"
 artist: "Various Artists"
 year: 2024
-recordLabel: "Personal"
-catalogNumber: "TST-001"
 
-physicalLabels:
-  sideA:
-    text: "Mix Vol. 1 - Side A - Alternative & Indie"
-    image: "/cassettes/sample-label-a.jpg"
-  sideB:
-    text: "Mix Vol. 1 - Side B - Electronic & Experimental"
-    image: "/cassettes/sample-label-b.jpg"
-
-genres:
-  - "Electronic"
-  - "Experimental"
+metadata:
+  recordLabel: "Personal"
+  catalogNumber: "TST-001"
+  genres:
+    - "Electronic"
+    - "Experimental"
+  tags:
+    - "demo"
+    - "testing"
+  legacy_media:
+    coverFront: "/cassettes/sample-front.jpg"
+    caseWithTape: "/cassettes/sample-case.jpg"
+    tapeSideA: "/cassettes/sample-side-a.jpg"
+    tapeSideB: "/cassettes/sample-side-b.jpg"
+    jcardFullSpread: "/cassettes/sample-jcard.jpg"
 
 tapeType: "Type I"
-
-aesthetics:
-  shellColor: "Black"
-  shellColorSideA: "Black"
-  shellColorSideB: "Black"
-  hasPrismsOrWindows: false
-
-media:
-  coverFront: "/cassettes/sample-front.jpg"
-  caseWithTape: "/cassettes/sample-case.jpg"
-  tapeSideA: "/cassettes/sample-side-a.jpg"
-  tapeSideB: "/cassettes/sample-side-b.jpg"
-
 originType: "Original"
-isCustomArt: false
-condition: "Mint Condition"
 
-transplantDetails:
-  tapeSource: "New Blank Tape"
-  recordedOver: false
+physicalProperties:
+  tapeType: "Type I"
+  shell:
+    color: "Black"
+  condition: "Mint Condition"
 
-shelving:
+recordingContent:
+  type: "compilation"
+  sides:
+    A:
+      - artist: "Nirvana"
+        title: "Nevermind"
+        type: "album"
+        notes: "Original album, tracks 1-5"
+      - artist: "Neutral Milk Hotel"
+        title: "In the Aeroplane Over the Sea"
+        type: "album"
+        notes: "Tracks 1-2"
+    B:
+      - artist: "Radiohead"
+        title: "OK Computer (Side B)"
+        type: "album"
+        notes: "Full album, original pressing"
+      - artist: "Local Band / Personal Recording"
+        title: "Custom Recording - Live Session"
+        type: "personal-recording"
+        notes: "Bootleg live recording, custom home mix"
+
+artwork:
+  jcard:
+    status: "designed"
+    images:
+      front: "/cassettes/sample-front.jpg"
+      back: "/cassettes/sample-case.jpg"
+  labels:
+    sideA:
+      text: "Mix Vol. 1 - Side A - Alternative & Indie"
+      image: "/cassettes/sample-label-a.jpg"
+    sideB:
+      text: "Mix Vol. 1 - Side B - Electronic & Experimental"
+      image: "/cassettes/sample-label-b.jpg"
+
+location:
   physical:
-    name: "Sample Shelf"
-  byGenre: "Electronic"
-isDonor: false
+    shelf: "Sample Shelf"
 
-tags:
-  - "demo"
-  - "testing"
-
-packaging:
-  isDoubleBox: false
-  isFourTapeBox: false
-  isDoubleDuration: false
-  - albumTitle: "Nevermind"
-    artist: "Nirvana"
-    side: "A"
-    notes: "Original album, tracks 1-5"
-  - albumTitle: "In the Aeroplane Over the Sea"
-    artist: "Neutral Milk Hotel"
-    side: "A"
-    notes: "Tracks 1-2"
-  - albumTitle: "OK Computer (Side B)"
-    artist: "Radiohead"
-    side: "B"
-    notes: "Full album, original pressing"
-  - albumTitle: "Custom Recording - Live Session"
-    artist: "Local Band / Personal Recording"
-    side: "B"
-    notes: "Bootleg live recording, custom home mix"
+tasks: []
 ---
 
 This is a sample **compilation/mixtape cassette** that demonstrates how to catalog multiple artists and albums on a single tape.
