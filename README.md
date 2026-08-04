@@ -1,61 +1,85 @@
-# Astro Starter Kit: Minimal
+# Cassette Culture
 
-```sh
-npm create astro@latest -- --template minimal
-```
+A personal Astro app for managing a physical cassette collection. This project is designed around the cassette as a physical object, not as a generic music catalog.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Project Purpose
 
-## 🚀 Project Structure
+This application helps you store, track, and document individual cassette tapes. Each cassette is modeled as a unique physical artifact with:
 
-Inside of your Astro project, you'll see the following folders and files:
+- identity and physical properties
+- recorded content per side
+- artwork and labels
+- restoration or modification history
+- project status and tasks
+- physical and virtual location metadata
+- tags and genres for collection organization
+
+## Stack
+
+- Astro for the frontend framework
+- Astro Content Collections for cassette data modeling
+- Zod for schema validation
+- TypeScript strict mode enabled
+
+## Project Structure
 
 ```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+src/
+  content/
+    cassettes/
+  schemas/
+  pages/
+  components/
+  utils/
+src/content.config.ts
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Adding a new cassette
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Create a markdown file under `src/content/cassettes/` with YAML frontmatter.
 
-Any static assets, like images, can be placed in the `public/` directory.
+The minimal cassette entry includes:
 
-## 🧞 Commands
+- `title`
+- `artist`
+- `year`
+- `recordingContent` with `sideA` and `sideB`
 
-All commands are run from the root of the project, from a terminal:
+See `CASSETTE_ENTRY_GUIDE.md` for a complete example and recommended structure.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Domain model
 
-## 👀 Want to learn more?
+This app uses a clean cassette-first schema with the following top-level sections:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- `title`, `artist`, `year`
+- `physicalProperties`
+- `recordingContent`
+- `artwork`
+- `history`
+- `project`
+- `location`
+- `metadata`
 
+### Highlights
 
-## Data model (summary)
+- `physicalProperties` describes the tape as an object: brand, model, tape type, shell, condition, and notes.
+- `recordingContent` describes what is recorded on the tape, separated by `sideA` and `sideB`.
+- `artwork` stores J-card and label status, images, and text.
+- `history` stores restoration and modification events.
+- `project` treats the cassette as a work in progress with status, tasks, notes, and optional completion date.
+- `location` stores physical placement and virtual collections for grouping.
+- `metadata` stores transversal data like genres and tags.
 
-This project uses a structured cassette schema designed for a physical cassette collection. The key sections in cassette frontmatter are:
+## Future roadmap
 
-- physicalProperties: brand, model, tapeType, shell (color, transparency, specialFeatures), condition, notes
-- recordingContent: type (original, album-copy, mixtape, personal-recording, compilation) and sides (A/B) with items per side (artist, title, type, notes, duration)
-- artwork: jcard (status/images/text), labels (sideA/sideB with text/image)
-- history: chronological modifications and restorations
-- tasks: per-cassette tasks with type and status
-- location: physical shelf/box/position and flexible virtualCollections
-- metadata: genres, tags, recordLabel, catalogNumber, notes
+This project is intentionally built for future growth:
 
-Top-level: title, artist and year remain as top-level fields for compatibility with existing pages.
+- better cassette entry UI and admin workflows
+- richer cassette detail pages
+- image galleries and condition documentation
+- backend storage and API integration
+- import/export for physical collection management
 
-This README is a lightweight reference; see CASSETTE_ENTRY_GUIDE.md for examples and templates.
+## Notes
 
+The current implementation is content-driven. The domain model is intentionally clean and free of compatibility cruft. Future iterations can add persistence, search, and admin tools while keeping this cassette-first structure.

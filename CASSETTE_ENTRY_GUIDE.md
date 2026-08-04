@@ -1,298 +1,180 @@
-# 📼 Cassette Entry Guide
+# Cassette Entry Guide
 
-Note: The cassette frontmatter now follows a structured schema with the main sections: physicalProperties, recordingContent, artwork, history, tasks, location and metadata. Keep title, artist and year at the top level for compatibility.
+This project models each cassette as a physical object with its own recorded content, artwork, history, project state, and location.
 
-Minimal example (recommended):
+## File location
+
+Create a markdown file in `src/content/cassettes/`.
+
+Example:
+
+```text
+src/content/cassettes/ceci-jay-simpson.md
+```
+
+## Required top-level fields
 
 ```yaml
 ---
-title: "Cassette Title"
-artist: "Artist Name"
-year: 2024
+title: "Carry On Tape"
+artist: "Cecilio G"
+year: 2022
+recordingContent:
+  type: "personal-recording"
+  sideA: []
+  sideB: []
+---
+```
+
+## Recommended cassette structure
+
+```yaml
+---
+title: "Carry On Tape"
+artist: "Cecilio G"
+year: 2022
 
 physicalProperties:
-  tapeType: "Type I"
+  brand: "Maxell"
+  model: "XLII 90"
+  tapeType: "Type II"
   shell:
     color: "Black"
+    transparent: true
+    specialFeatures:
+      - "Reinforced shell"
+  condition: "Excellent"
+  notes: "Clean transport path and solid shell."
 
 recordingContent:
-  type: "mixtape"
-  sides:
-    A: []
-    B: []
+  type: "personal-recording"
+  sideA:
+    - type: "mixtape"
+      title: "Side A Mix"
+      artist: "Various Artists"
+      duration: "45:00"
+      notes: "Original home mix with vocal samples."
+      tracks:
+        - title: "Intro"
+          artist: "Unknown"
+          duration: "1:20"
+        - title: "Beat One"
+          artist: "Sampler"
+          duration: "3:30"
+  sideB:
+    - type: "personal-recording"
+      title: "Field Recording"
+      notes: "Live rehearsal from 2022."
+      duration: "42:00"
 
 artwork:
   jcard:
-    status: "missing"
+    status: "designed"
+    image: "/cassettes/jcard-front.jpg"
+    text: "Handwritten liner notes."
   labels:
     sideA:
-      text: ""
-      image: ""
+      status: "printed"
+      text: "Side A"
+      image: "/cassettes/label-a.jpg"
     sideB:
-      text: ""
-      image: ""
+      status: "printed"
+      text: "Side B"
+      image: "/cassettes/label-b.jpg"
 
-tasks: []
+history:
+  - type: "restoration"
+    date: "2026-08-04"
+    description: "Cleaned tape heads and replaced shell screws."
+  - type: "new-recording"
+    date: "2022-04-15"
+    description: "Recorded mixtape and annotated tracklist."
+
+project:
+  status: "in_progress"
+  notes: "Waiting for a printed J-card insert and new case photos."
+  tasks:
+    - type: "design-jcard"
+      status: "done"
+    - type: "print-label"
+      status: "pending"
 
 location:
   physical:
-    shelf: "My Shelf"
+    shelf: "Main shelf"
+    box: "Box A"
+    position: 2
+  virtualCollections:
+    genre: ["Electronic", "Experimental"]
+    favourites: true
+    personalProjects: ["Tape Archive"]
 
 metadata:
-  genres: ["Electronic"]
-  tags: ["demo"]
----
-```
-
-
-Quick reference for adding cassettes to your library.
-
-## File Format
-
-Each cassette is a **markdown file** in `src/content/cassettes/` with YAML frontmatter.
-
-**Naming**: Use kebab-case for filenames, matching the cassette slug:
-```
-src/content/cassettes/[slug-name].md
-```
-
-## Minimal Entry (Required Fields)
-
-```yaml
----
-title: "Cassette Title or Mix Name"
-artist: "Main Artist or 'Various Artists'"
-year: 2024
-
-recordLabel: "Label Name"
-
-physicalLabels:
-  sideA:
-    text: "Side A label text"
-  sideB:
-    text: "Side B label text"
-
-genres:
-  - "Genre 1"
-  - "Genre 2"
-
-tapeType: "Type I"  # or "Type II" or "Type IV"
-
-aesthetics:
-  shellColor: "Color"
-
-originType: "Original"  # or "Recorded from Scratch" or "Transplant"
-
-tags:
-  - "tag1"
-  - "tag2"
-
-packaging:
-  isDoubleBox: false
+  genres:
+    - "Electronic"
+    - "Experimental"
+  tags:
+    - "mixtape"
+    - "personal"
 ---
 
-Description of the cassette in markdown format.
+A short narrative description of the cassette, its origin, and any restoration notes.
 ```
 
-## Full Entry with Multiple Albums/Artists
+## Field reference
 
-```yaml
----
-title: "My Compilation Vol. 1"
-artist: "Various Artists"
-year: 2024
-recordLabel: "Personal"
-catalogNumber: "PERS-001"
+### Top-level
+- `title`: Cassette name or mix title.
+- `artist`: Primary creator or performer.
+- `year`: Year of the recording or release.
 
-physicalLabels:
-  sideA:
-    text: "Mix Vol. 1 - Side A"
-    image: "/cassettes/my-comp-label-a.jpg"
-  sideB:
-    text: "Mix Vol. 1 - Side B"
-    image: "/cassettes/my-comp-label-b.jpg"
+### physicalProperties
+- `brand`: Physical tape brand.
+- `model`: Tape model.
+- `tapeType`: `Type I`, `Type II`, or `Type IV`.
+- `shell.color`: Shell color.
+- `shell.transparent`: Whether the shell is transparent.
+- `shell.specialFeatures`: Additional physical details.
+- `condition`: Physical condition summary.
+- `notes`: Any cassette-specific notes.
 
-genres:
-  - "Electronic"
-  - "Experimental"
+### recordingContent
+- `type`: One of: `original`, `album-copy`, `mixtape`, `personal-recording`, `compilation`.
+- `sideA` / `sideB`: Lists of recordings on each tape side.
+- `type` (per recording): Describes the recorded material.
+- `title`: Recording title or mix name.
+- `artist`: Optional artist or performer.
+- `duration`: Optional total duration.
+- `notes`: Optional notes about the recording.
+- `tracks`: Optional tracklist for mixtapes/compilations.
 
-tapeType: "Type I"
+### artwork
+- `jcard.status`: `missing`, `handwritten`, `designed`, or `printed`.
+- `jcard.image`: Optional J-card image path.
+- `jcard.text`: Optional handwritten or printed text.
+- `labels.sideA` / `labels.sideB`: Label status, image, and text.
 
-aesthetics:
-  shellColor: "Black"
-  shellColorSideA: "Black"
-  shellColorSideB: "White"
-  hasPrismsOrWindows: false
+### history
+- `type`: Modification type (`restoration`, `tape-transplant`, `shell-replacement`, `new-recording`, etc.).
+- `date`: Optional date in ISO format.
+- `description`: What changed.
 
-media:
-  coverFront: "/images/cassettes/my-comp-front.jpg"
-  caseWithTape: "/images/cassettes/my-comp-case.jpg"
-  tapeSideA: "/images/cassettes/my-comp-a.jpg"
-  tapeSideB: "/images/cassettes/my-comp-b.jpg"
-  jcardFullSpread: "/images/cassettes/my-comp-jcard.jpg"
+### project
+- `status`: `pending`, `in_progress`, `done`, or `blocked`.
+- `tasks`: Optional task list.
+- `notes`: Notes about the cassette project.
+- `completedAt`: Optional completion date.
 
-originType: "Recorded from Scratch"
-isCustomArt: true
-condition: "Excellent"  # Options: Excellent, Mint Condition, Mechanically Damaged, Missing J-Card, Rescued (Needs Cleaning)
+### location
+- `physical.shelf`: Physical shelf or storage location.
+- `physical.box`: Storage box identifier.
+- `physical.position`: Optional numeric position.
+- `virtualCollections`: Flexible grouping values for genres, projects, favourites, restoration status, etc.
 
-shelving:
-  physical:
-    name: "My Shelf"
-  byGenre: "Genre Name"
-isDonor: false
+### metadata
+- `genres`: Array of genre strings.
+- `tags`: Array of tag strings.
 
-tags:
-  - "compilation"
-  - "personal-mix"
+## Notes
 
-pendingTasks:  # Optional - for tape restoration/creation
-  - "create-labels"
-  - "record-audio"
-
-packaging:
-  isDoubleBox: false
-
-digitalSource:  # Optional - if you have/want FLAC versions
-  searchQuery: "album name artist"
-  hasFlacAcquired: true
-  isReadyToRecord: true
-
-contentStructure:
-  - albumTitle: "Album A - Side A"
-    artist: "Artist A"
-    side: "A"
-    notes: "Tracks 1-6"
-  - albumTitle: "Album B - Side A"
-    artist: "Artist B"
-    side: "A"
-    notes: "Complete album"
-  - albumTitle: "Album C - Side B"
-    artist: "Artist C"
-    side: "B"
-    notes: "Partial, first 5 tracks"
-  - albumTitle: "Custom Home Recording"
-    artist: "Local Band / Personal"
-    side: "B"
-    notes: "Bootleg live session"
----
-
-Detailed description and notes about the cassette.
-```
-
-## Field Reference
-
-### Required Fields
-- **title**: Cassette/mix name
-- **artist**: Main artist or "Various Artists"
-- **year**: Release/recording year
-- **genres**: Array of genre strings
-- **tapeType**: Type I, Type II, or Type IV
-- **aesthetics**: Shell color details
-- **originType**: Original, Recorded from Scratch, or Transplant
-- **tags**: Array of descriptive tags
-- **packaging**: Box configuration
-
-### Optional Fields
-- **recordLabel**: Record label name (e.g., "Warner Bros", "Personal")
-- **catalogNumber**: Label catalog number
-- **physicalLabels**: Text and/or images of the label stickers on Side A and Side B
-- **transplantDetails**: Details about tape source and recording if originType is 'Transplant'
-- **shelving**: Multi-dimensional organization (physical location + virtual classifications)
-- **media**: Links to image files (photos of cassette/case/jcard)
-- **condition**: Physical condition (defaults to "Mint Condition")
-- **isDonor**: If cassette is designated as donor (for parts)
-- **isCustomArt**: If custom artwork was created
-- **pendingTasks**: Tasks needed (labeling, recording, repairs, etc.)
-- **digitalSource**: Metadata if you're acquiring/have FLAC versions
-- **contentStructure**: Detailed track/album listings per side
-
-### Condition Options
-- Excellent
-- Mint Condition
-- Mechanically Damaged
-- Missing J-Card
-- Rescued (Needs Cleaning)
-
-### Shelving Structure
-
-Use `shelving` for multi-dimensional organization. The `physical` entry shows your actual shelf location.
-
-**Available fields:**
-- `physical.name` - Physical shelf name (e.g., "Trap Shelf")
-- `physical.shelf` - Specific physical location (future use)
-- `physical.position` - Index on shelf (future use)
-- `byGenre` - Genre classification
-- `byArtist` - Artist classification
-- `byYear` - Year classification
-- `byMood` - Mood/vibe classification
-- `byCondition` - Condition classification
-- `custom1`, `custom2`, `custom3` - Custom classifications
-
-### Pending Tasks
-- create-labels
-- create-jcard
-- paint-cassette
-- record-audio
-- repair-felt
-- clean-grease
-
-## Quick Copy-Paste Template
-
-```yaml
----
-title: ""
-artist: ""
-year: 
-recordLabel: ""
-
-physicalLabels:
-  sideA:
-    text: ""
-  sideB:
-    text: ""
-
-genres:
-  - ""
-
-tapeType: "Type I"
-
-aesthetics:
-  shellColor: ""
-
-originType: "Original"
-
-transplantDetails:  # Only if originType is 'Transplant'
-  tapeSource: "New Blank Tape"
-  recordedOver: false
-
-tags:
-  - ""
-
-packaging:
-  isDoubleBox: false
----
-
-Notes here.
-```
-
-## Tips for Speed Entry
-
-1. **Start simple**: Use minimal entries first, add media/contentStructure later
-2. **Batch by shelf**: Group entries by where they're stored
-3. **Use partial data**: You can add images and details later
-4. **Markdown body**: Add any extra notes/observations after the frontmatter
-5. **Multiple artists**: Use `contentStructure` array for compilations/mixtapes
-6. **Split albums**: You can have same album on both sides with different track ranges
-7. **Physical labels**: Add text and/or image paths for Side A and Side B labels separately
-8. **Transplant info**: When originType is 'Transplant', provide tapeSource and recordedOver details
-
-## File Location
-```
-src/content/cassettes/[your-slug-name].md
-```
-
-Example slugs:
-- `nirvana-nevermind.md`
-- `my-mix-vol-1.md`
-- `various-electronica-compilation.md`
-- `bootleg-live-session-2023.md`
+This guide is intentionally focused on a clean cassette-first model. Avoid using legacy or compatibility-only fields. Keep each cassette file as a single source of truth for the physical tape and its recorded content.
