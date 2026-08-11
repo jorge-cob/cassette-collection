@@ -8,20 +8,23 @@ import Layout from '../../layouts/Layout.astro';
     <p class="mt-2 text-neutral-400">Fill the form to generate a cassette Markdown entry you can copy or download.</p>
 
     <section x-data="cassetteForm()" class="mt-6 grid gap-6 md:grid-cols-2">
-      <form @submit.prevent="generateMarkdown()" class="space-y-4">
+      <form @submit.prevent="generateMarkdown()" class="space-y-4" novalidate>
         <div>
           <label class="block text-sm text-neutral-300">Title</label>
-          <input x-model="title" type="text" required class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" />
+          <input x-model="title" @input="clearFieldError('title')" type="text" required class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" />
+          <p x-show="!titleValid()" x-cloak class="mt-1 text-xs text-rose-400">Title is required.</p>
         </div>
 
         <div>
           <label class="block text-sm text-neutral-300">Artist</label>
-          <input x-model="artist" type="text" required class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" />
+          <input x-model="artist" @input="clearFieldError('artist')" type="text" required class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" />
+          <p x-show="!artistValid()" x-cloak class="mt-1 text-xs text-rose-400">Artist is required.</p>
         </div>
 
         <div>
           <label class="block text-sm text-neutral-300">Year</label>
-          <input x-model.number="year" type="number" min="1900" max="2100" required class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" />
+          <input x-model.number="year" @input="clearFieldError('year')" type="number" min="1900" :max="new Date().getFullYear()+1" required class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" />
+          <p x-show="!yearValid()" x-cloak class="mt-1 text-xs text-rose-400">Enter a valid year between 1900 and next year.</p>
         </div>
 
         <div>
@@ -55,9 +58,15 @@ import Layout from '../../layouts/Layout.astro';
         </div>
 
         <div class="flex gap-2">
-          <button type="submit" class="inline-flex items-center justify-center rounded bg-amber-500 px-4 py-2 text-sm font-medium text-neutral-950">Generate Markdown</button>
+          <button :disabled="!isValid()" :class="{ 'opacity-60 pointer-events-none': !isValid() }" type="submit" class="inline-flex items-center justify-center rounded bg-amber-500 px-4 py-2 text-sm font-medium text-neutral-950">Generate Markdown</button>
           <button type="button" @click="clear()" class="inline-flex items-center justify-center rounded border border-neutral-700 px-4 py-2 text-sm text-neutral-200">Clear</button>
         </div>
+
+        <template x-if="showErrors">
+          <div class="mt-2 text-sm text-rose-400">
+            Please fix the highlighted fields above before generating the file.
+          </div>
+        </template>
       </form>
 
       <div>
@@ -89,6 +98,7 @@ import Layout from '../../layouts/Layout.astro';
       generated: '',
       downloadUrl: '',
       downloadName: 'new-cassette.md',
+      showErrors: false,
 
       clear() {
         this.title = '';
@@ -101,9 +111,39 @@ import Layout from '../../layouts/Layout.astro';
         this.notes = '';
         this.generated = '';
         this.downloadUrl = '';
+        this.showErrors = false;
+      },
+
+      titleValid() {
+        return this.title && this.title.trim().length > 0;
+      },
+
+      artistValid() {
+        return this.artist && this.artist.trim().length > 0;
+      },
+
+      yearValid() {
+        const y = Number(this.year);
+        const min = 1900;
+        const max = new Date().getFullYear() + 1;
+        return Number.isInteger(y) && y >= min && y <= max;
+      },
+
+      isValid() {
+        return this.titleValid() && this.artistValid() && this.yearValid();
+      },
+
+      clearFieldError(field) {
+        // just a simple hook to hide generic error when user edits fields
+        this.showErrors = false;
       },
 
       generateMarkdown() {
+        if (!this.isValid()) {
+          this.showErrors = true;
+          return;
+        }
+
         const genres = this.genresRaw.split(',').map(s => s.trim()).filter(Boolean);
         const tags = this.tagsRaw.split(',').map(s => s.trim()).filter(Boolean);
 
@@ -123,8 +163,6 @@ import Layout from '../../layouts/Layout.astro';
             tags: tags.length ? tags : undefined
           }
         };
-
-        // Build YAML frontmatter manually
 
         // Simpler YAML builder for our limited use
         let yaml = '---\n';
