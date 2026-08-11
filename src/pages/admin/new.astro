@@ -68,6 +68,7 @@ import Layout from '../../layouts/Layout.astro';
           <div class="mt-2">
             <label class="block text-xs text-neutral-400">J-card image URL</label>
             <input x-model="jcardImage" type="text" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" placeholder="/cassettes/jcard.jpg or https://..." />
+          <p class="text-xs text-neutral-500 mt-1">Use a relative path under /public or an external URL. Uploads not supported yet.</p>
           </div>
 
           <div class="mt-2 grid grid-cols-2 gap-2">
@@ -113,9 +114,9 @@ import Layout from '../../layouts/Layout.astro';
             <template x-for="(item, idx) in sideA" :key="idx">
               <div class="mt-2 rounded border border-neutral-800 p-2">
                 <div class="grid gap-2 md:grid-cols-3">
-                  <input x-model="item.title" placeholder="Title" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
-                  <input x-model="item.artist" placeholder="Artist" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
-                  <input x-model="item.duration" placeholder="Duration" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <input x-model="item.title" placeholder="Title (e.g. Side A Mix)" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <input x-model="item.artist" placeholder="Artist (e.g. Various Artists)" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <input x-model="item.duration" placeholder="Duration (e.g. 3:45)" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
                 </div>
                 <div class="mt-2 flex items-center gap-2">
                   <input x-model="item.notes" placeholder="Notes" class="w-full rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
@@ -134,9 +135,9 @@ import Layout from '../../layouts/Layout.astro';
             <template x-for="(item, idx) in sideB" :key="idx">
               <div class="mt-2 rounded border border-neutral-800 p-2">
                 <div class="grid gap-2 md:grid-cols-3">
-                  <input x-model="item.title" placeholder="Title" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
-                  <input x-model="item.artist" placeholder="Artist" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
-                  <input x-model="item.duration" placeholder="Duration" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <input x-model="item.title" placeholder="Title (e.g. Side B Mix)" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <input x-model="item.artist" placeholder="Artist (e.g. Various Artists)" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <input x-model="item.duration" placeholder="Duration (e.g. 3:45)" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
                 </div>
                 <div class="mt-2 flex items-center gap-2">
                   <input x-model="item.notes" placeholder="Notes" class="w-full rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
