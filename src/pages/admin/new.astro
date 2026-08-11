@@ -125,12 +125,6 @@ import Layout from '../../layouts/Layout.astro';
         };
 
         // Build YAML frontmatter manually
-        function yamlValue(v) {
-          if (Array.isArray(v)) return v.length ? `\n${v.map(i => `  - "${i.replace(/"/g, '\\"')}"`).join('\n')}` : '\n  []';
-          if (typeof v === 'object' && v !== null) return Object.entries(v).map(([k, val]) => `  ${k}: ${yamlValue(val).replace(/^\n/, '')}`).join('\n');
-          if (v === undefined) return 'undefined';
-          return `"${String(v).replace(/"/g, '\\"')}"`;
-        }
 
         // Simpler YAML builder for our limited use
         let yaml = '---\n';
