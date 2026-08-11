@@ -5,6 +5,175 @@ import Layout from '../../layouts/Layout.astro';
 <Layout title="Add Cassette">
   <main class="container mx-auto px-4 py-8">
     <h1 class="text-2xl font-bold tracking-tight">Add Cassette</h1>
-    <p class="mt-2 text-neutral-400">Creation form — Soon.</p>
+    <p class="mt-2 text-neutral-400">Fill the form to generate a cassette Markdown entry you can copy or download.</p>
+
+    <section x-data="cassetteForm()" class="mt-6 grid gap-6 md:grid-cols-2">
+      <form @submit.prevent="generateMarkdown()" class="space-y-4">
+        <div>
+          <label class="block text-sm text-neutral-300">Title</label>
+          <input x-model="title" type="text" required class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" />
+        </div>
+
+        <div>
+          <label class="block text-sm text-neutral-300">Artist</label>
+          <input x-model="artist" type="text" required class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" />
+        </div>
+
+        <div>
+          <label class="block text-sm text-neutral-300">Year</label>
+          <input x-model.number="year" type="number" min="1900" max="2100" required class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" />
+        </div>
+
+        <div>
+          <label class="block text-sm text-neutral-300">Tape type</label>
+          <select x-model="tapeType" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100">
+            <option value="">(unset)</option>
+            <option>Type I</option>
+            <option>Type II</option>
+            <option>Type IV</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm text-neutral-300">Shelf (physical location)</label>
+          <input x-model="shelf" type="text" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" />
+        </div>
+
+        <div>
+          <label class="block text-sm text-neutral-300">Genres (comma separated)</label>
+          <input x-model="genresRaw" type="text" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" placeholder="e.g. Electronic, Experimental" />
+        </div>
+
+        <div>
+          <label class="block text-sm text-neutral-300">Tags (comma separated)</label>
+          <input x-model="tagsRaw" type="text" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" placeholder="e.g. demo, testing" />
+        </div>
+
+        <div>
+          <label class="block text-sm text-neutral-300">Notes / Description</label>
+          <textarea x-model="notes" rows="4" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"></textarea>
+        </div>
+
+        <div class="flex gap-2">
+          <button type="submit" class="inline-flex items-center justify-center rounded bg-amber-500 px-4 py-2 text-sm font-medium text-neutral-950">Generate Markdown</button>
+          <button type="button" @click="clear()" class="inline-flex items-center justify-center rounded border border-neutral-700 px-4 py-2 text-sm text-neutral-200">Clear</button>
+        </div>
+      </form>
+
+      <div>
+        <label class="block text-sm text-neutral-300">Generated Markdown</label>
+        <textarea x-model="generated" rows="18" readonly class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"></textarea>
+
+        <div class="mt-3 flex gap-2">
+          <button type="button" @click="copy()" class="inline-flex items-center justify-center rounded border border-neutral-700 px-4 py-2 text-sm text-neutral-200">Copy</button>
+          <a :href="downloadUrl" :download="downloadName" x-show="generated" @click="prepareDownload()" class="inline-flex items-center justify-center rounded bg-amber-500 px-4 py-2 text-sm font-medium text-neutral-950">Download .md</a>
+        </div>
+
+        <p class="mt-3 text-xs text-neutral-500">This form is client-side only and generates a Markdown file compatible with the project's cassette collection schema. You can copy the output and add it to src/content/cassettes/.</p>
+      </div>
+    </section>
   </main>
 </Layout>
+
+<script>
+  function cassetteForm() {
+    return {
+      title: '',
+      artist: '',
+      year: new Date().getFullYear(),
+      tapeType: '',
+      shelf: '',
+      genresRaw: '',
+      tagsRaw: '',
+      notes: '',
+      generated: '',
+      downloadUrl: '',
+      downloadName: 'new-cassette.md',
+
+      clear() {
+        this.title = '';
+        this.artist = '';
+        this.year = new Date().getFullYear();
+        this.tapeType = '';
+        this.shelf = '';
+        this.genresRaw = '';
+        this.tagsRaw = '';
+        this.notes = '';
+        this.generated = '';
+        this.downloadUrl = '';
+      },
+
+      generateMarkdown() {
+        const genres = this.genresRaw.split(',').map(s => s.trim()).filter(Boolean);
+        const tags = this.tagsRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+        const frontmatter = {
+          title: this.title || 'Untitled',
+          artist: this.artist || 'Unknown',
+          year: Number.isInteger(this.year) ? this.year : parseInt(this.year) || new Date().getFullYear(),
+          physicalProperties: {
+            tapeType: this.tapeType || undefined
+          },
+          location: {
+            physical: { shelf: this.shelf || undefined }
+          },
+          recordingContent: { type: 'personal-recording', sideA: [], sideB: [] },
+          metadata: {
+            genres: genres.length ? genres : undefined,
+            tags: tags.length ? tags : undefined
+          }
+        };
+
+        // Build YAML frontmatter manually
+        function yamlValue(v) {
+          if (Array.isArray(v)) return v.length ? `\n${v.map(i => `  - "${i.replace(/"/g, '\\"')}"`).join('\n')}` : '\n  []';
+          if (typeof v === 'object' && v !== null) return Object.entries(v).map(([k, val]) => `  ${k}: ${yamlValue(val).replace(/^\n/, '')}`).join('\n');
+          if (v === undefined) return 'undefined';
+          return `"${String(v).replace(/"/g, '\\"')}"`;
+        }
+
+        // Simpler YAML builder for our limited use
+        let yaml = '---\n';
+        yaml += `title: "${this.title.replace(/"/g, '\\"')}"\n`;
+        yaml += `artist: "${this.artist.replace(/"/g, '\\"')}"\n`;
+        yaml += `year: ${Number.isInteger(this.year) ? this.year : parseInt(this.year) || new Date().getFullYear()}\n\n`;
+
+        if (this.tapeType) yaml += `physicalProperties:\n  tapeType: "${this.tapeType}"\n`;
+        if (this.shelf) yaml += `location:\n  physical:\n    shelf: "${this.shelf.replace(/"/g, '\\"')}"\n`;
+
+        yaml += `recordingContent:\n  type: "personal-recording"\n  sideA: []\n  sideB: []\n`;
+
+        if (genres.length) {
+          yaml += '\nmetadata:\n  genres:';
+          genres.forEach(g => { yaml += `\n    - "${g.replace(/"/g, '\\"')}"`; });
+        }
+        if (tags.length) {
+          if (!genres.length) yaml += '\nmetadata:';
+          yaml += '\n  tags:';
+          tags.forEach(t => { yaml += `\n    - "${t.replace(/"/g, '\\"')}"`; });
+        }
+
+        if (this.notes) yaml += `\n\n---\n\n${this.notes}\n`;
+        else yaml += '\n---\n\n';
+
+        this.generated = yaml;
+        this.prepareDownload();
+      },
+
+      copy() {
+        if (!this.generated) return;
+        navigator.clipboard.writeText(this.generated).then(() => {
+          // small visual feedback could be added
+        });
+      },
+
+      prepareDownload() {
+        if (this.downloadUrl) URL.revokeObjectURL(this.downloadUrl);
+        const blob = new Blob([this.generated], { type: 'text/markdown' });
+        this.downloadUrl = URL.createObjectURL(blob);
+        const safeTitle = (this.title || 'new-cassette').toLowerCase().replace(/[^a-z0-9-_]+/g, '-').replace(/^-|-$/g, '');
+        this.downloadName = `${safeTitle || 'new-cassette'}.md`;
+      }
+    };
+  }
+</script>
