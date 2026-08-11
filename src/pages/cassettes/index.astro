@@ -1,0 +1,70 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const cassettes = (await getCollection('cassettes')).sort((a, b) =>
+  a.data.title.localeCompare(b.data.title)
+);
+---
+
+<Layout title="Cassette Library">
+  <main class="container mx-auto px-4 py-8">
+    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div>
+        <p class="text-sm uppercase tracking-[0.2em] text-neutral-500">Collection</p>
+        <h1 class="text-2xl font-bold tracking-tight">Cassette Library</h1>
+        <p class="mt-2 text-neutral-400">Browse the cassettes in your collection.</p>
+      </div>
+
+      <a
+        href="/admin/new"
+        class="inline-flex items-center justify-center rounded border border-neutral-700 px-4 py-2 text-sm font-medium text-neutral-200 transition hover:bg-neutral-800"
+      >
+        Add cassette
+      </a>
+    </div>
+
+    {cassettes.length === 0 ? (
+      <div class="mt-8 rounded border border-neutral-800 bg-neutral-900/70 p-6 text-neutral-400">
+        No cassettes have been added yet.
+      </div>
+    ) : (
+      <section class="mt-8 grid gap-4 md:grid-cols-2">
+        {cassettes.map((cassette) => {
+          const projectStatus = cassette.data.project?.status ?? 'pending';
+          const projectLabel = projectStatus.replace(/_/g, ' ');
+          const shelf = cassette.data.location?.physical?.shelf;
+          const genres = cassette.data.metadata?.genres ?? [];
+
+          return (
+            <article class="rounded-lg border border-neutral-800 bg-neutral-900/70 p-5 shadow-sm">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <h2 class="text-lg font-semibold text-neutral-100">{cassette.data.title}</h2>
+                  <p class="mt-1 text-neutral-400">{cassette.data.artist} · {cassette.data.year}</p>
+                </div>
+                <span class="rounded-full border border-neutral-700 px-2.5 py-1 text-xs uppercase tracking-[0.18em] text-neutral-300">
+                  {projectLabel}
+                </span>
+              </div>
+
+              <div class="mt-4 flex flex-wrap gap-2 text-sm text-neutral-400">
+                {shelf ? <span>Location: {shelf}</span> : null}
+                {genres.length > 0 ? <span>Genres: {genres.join(', ')}</span> : null}
+              </div>
+
+              <div class="mt-6 flex flex-wrap items-center gap-3">
+                <a href={`/cassettes/${cassette.id}`} class="text-sm font-medium text-amber-400 transition hover:text-amber-300">
+                  View details
+                </a>
+                <a href={`/admin/edit/${cassette.id}`} class="text-sm text-neutral-400 transition hover:text-neutral-200">
+                  Edit
+                </a>
+              </div>
+            </article>
+          );
+        })}
+      </section>
+    )}
+  </main>
+</Layout>
