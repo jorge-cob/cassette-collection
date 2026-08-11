@@ -52,6 +52,139 @@ import Layout from '../../layouts/Layout.astro';
           <input x-model="tagsRaw" type="text" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" placeholder="e.g. demo, testing" />
         </div>
 
+        <!-- Artwork -->
+        <div class="mt-2 border-t border-neutral-800 pt-4">
+          <p class="text-sm text-neutral-300 font-medium">Artwork</p>
+          <div class="mt-2">
+            <label class="block text-xs text-neutral-400">J-card status</label>
+            <select x-model="jcardStatus" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100">
+              <option value="">(unset)</option>
+              <option value="missing">missing</option>
+              <option value="handwritten">handwritten</option>
+              <option value="designed">designed</option>
+              <option value="printed">printed</option>
+            </select>
+          </div>
+          <div class="mt-2">
+            <label class="block text-xs text-neutral-400">J-card image URL</label>
+            <input x-model="jcardImage" type="text" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100" placeholder="/cassettes/jcard.jpg or https://..." />
+          </div>
+
+          <div class="mt-2 grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs text-neutral-400">Label Side A status</label>
+              <select x-model="labelSideAStatus" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100">
+                <option value="">(unset)</option>
+                <option value="missing">missing</option>
+                <option value="handwritten">handwritten</option>
+                <option value="designed">designed</option>
+                <option value="printed">printed</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-neutral-400">Label Side B status</label>
+              <select x-model="labelSideBStatus" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100">
+                <option value="">(unset)</option>
+                <option value="missing">missing</option>
+                <option value="handwritten">handwritten</option>
+                <option value="designed">designed</option>
+                <option value="printed">printed</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recording content -->
+        <div class="mt-4 border-t border-neutral-800 pt-4">
+          <p class="text-sm text-neutral-300 font-medium">Recording content</p>
+          <div class="mt-2">
+            <label class="block text-xs text-neutral-400">Type</label>
+            <select x-model="recordingType" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100">
+              <option value="original">original</option>
+              <option value="album-copy">album-copy</option>
+              <option value="mixtape">mixtape</option>
+              <option value="personal-recording">personal-recording</option>
+              <option value="compilation">compilation</option>
+            </select>
+          </div>
+
+          <div class="mt-3">
+            <p class="text-sm text-neutral-400">Side A</p>
+            <template x-for="(item, idx) in sideA" :key="idx">
+              <div class="mt-2 rounded border border-neutral-800 p-2">
+                <div class="grid gap-2 md:grid-cols-3">
+                  <input x-model="item.title" placeholder="Title" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <input x-model="item.artist" placeholder="Artist" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <input x-model="item.duration" placeholder="Duration" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                </div>
+                <div class="mt-2 flex items-center gap-2">
+                  <input x-model="item.notes" placeholder="Notes" class="w-full rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <button type="button" @click="removeRecordingItem('sideA', idx)" class="rounded border border-rose-600 px-2 py-1 text-xs text-rose-400">Remove</button>
+                </div>
+              </div>
+            </template>
+
+            <div class="mt-2">
+              <button type="button" @click="addRecordingItem('sideA')" class="rounded border border-neutral-700 px-3 py-1 text-sm text-neutral-200">Add Side A item</button>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <p class="text-sm text-neutral-400">Side B</p>
+            <template x-for="(item, idx) in sideB" :key="idx">
+              <div class="mt-2 rounded border border-neutral-800 p-2">
+                <div class="grid gap-2 md:grid-cols-3">
+                  <input x-model="item.title" placeholder="Title" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <input x-model="item.artist" placeholder="Artist" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <input x-model="item.duration" placeholder="Duration" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                </div>
+                <div class="mt-2 flex items-center gap-2">
+                  <input x-model="item.notes" placeholder="Notes" class="w-full rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                  <button type="button" @click="removeRecordingItem('sideB', idx)" class="rounded border border-rose-600 px-2 py-1 text-xs text-rose-400">Remove</button>
+                </div>
+              </div>
+            </template>
+
+            <div class="mt-2">
+              <button type="button" @click="addRecordingItem('sideB')" class="rounded border border-neutral-700 px-3 py-1 text-sm text-neutral-200">Add Side B item</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Project -->
+        <div class="mt-4 border-t border-neutral-800 pt-4">
+          <p class="text-sm text-neutral-300 font-medium">Project</p>
+          <div class="mt-2">
+            <label class="block text-xs text-neutral-400">Status</label>
+            <select x-model="projectStatus" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100">
+              <option value="pending">pending</option>
+              <option value="in_progress">in_progress</option>
+              <option value="done">done</option>
+              <option value="blocked">blocked</option>
+            </select>
+          </div>
+
+          <div class="mt-2">
+            <p class="text-sm text-neutral-400">Tasks</p>
+            <template x-for="(t, i) in tasks" :key="i">
+              <div class="mt-2 flex gap-2 items-center">
+                <input x-model="t.type" placeholder="Task type (e.g. design-jcard)" class="w-full rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100" />
+                <select x-model="t.status" class="rounded border border-neutral-700 bg-neutral-900 px-2 py-1 text-sm text-neutral-100">
+                  <option value="pending">pending</option>
+                  <option value="in_progress">in_progress</option>
+                  <option value="done">done</option>
+                  <option value="blocked">blocked</option>
+                </select>
+                <button type="button" @click="removeTask(i)" class="rounded border border-rose-600 px-2 py-1 text-xs text-rose-400">Remove</button>
+              </div>
+            </template>
+
+            <div class="mt-2">
+              <button type="button" @click="addTask()" class="rounded border border-neutral-700 px-3 py-1 text-sm text-neutral-200">Add task</button>
+            </div>
+          </div>
+        </div>
+
         <div>
           <label class="block text-sm text-neutral-300">Notes / Description</label>
           <textarea x-model="notes" rows="4" class="mt-1 w-full rounded border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-100"></textarea>
@@ -95,6 +228,23 @@ import Layout from '../../layouts/Layout.astro';
       genresRaw: '',
       tagsRaw: '',
       notes: '',
+
+      // new fields
+      // artwork
+      jcardStatus: '',
+      jcardImage: '',
+      labelSideAStatus: '',
+      labelSideBStatus: '',
+
+      // recording content
+      recordingType: 'personal-recording',
+      sideA: [],
+      sideB: [],
+
+      // project
+      projectStatus: 'pending',
+      tasks: [],
+
       generated: '',
       downloadUrl: '',
       downloadName: 'new-cassette.md',
@@ -109,6 +259,15 @@ import Layout from '../../layouts/Layout.astro';
         this.genresRaw = '';
         this.tagsRaw = '';
         this.notes = '';
+        this.jcardStatus = '';
+        this.jcardImage = '';
+        this.labelSideAStatus = '';
+        this.labelSideBStatus = '';
+        this.recordingType = 'personal-recording';
+        this.sideA = [];
+        this.sideB = [];
+        this.projectStatus = 'pending';
+        this.tasks = [];
         this.generated = '';
         this.downloadUrl = '';
         this.showErrors = false;
@@ -134,8 +293,26 @@ import Layout from '../../layouts/Layout.astro';
       },
 
       clearFieldError(field) {
-        // just a simple hook to hide generic error when user edits fields
         this.showErrors = false;
+      },
+
+      // recording item helpers (simple dynamic lists)
+      addRecordingItem(side) {
+        const item = { type: 'track', title: '', artist: '', duration: '', notes: '' };
+        if (side === 'sideA') this.sideA.push(item);
+        else this.sideB.push(item);
+      },
+      removeRecordingItem(side, idx) {
+        if (side === 'sideA') this.sideA.splice(idx, 1);
+        else this.sideB.splice(idx, 1);
+      },
+
+      // project tasks helpers
+      addTask() {
+        this.tasks.push({ type: '', status: 'pending' });
+      },
+      removeTask(idx) {
+        this.tasks.splice(idx, 1);
       },
 
       generateMarkdown() {
@@ -147,45 +324,92 @@ import Layout from '../../layouts/Layout.astro';
         const genres = this.genresRaw.split(',').map(s => s.trim()).filter(Boolean);
         const tags = this.tagsRaw.split(',').map(s => s.trim()).filter(Boolean);
 
-        const frontmatter = {
-          title: this.title || 'Untitled',
-          artist: this.artist || 'Unknown',
-          year: Number.isInteger(this.year) ? this.year : parseInt(this.year) || new Date().getFullYear(),
-          physicalProperties: {
-            tapeType: this.tapeType || undefined
-          },
-          location: {
-            physical: { shelf: this.shelf || undefined }
-          },
-          recordingContent: { type: 'personal-recording', sideA: [], sideB: [] },
-          metadata: {
-            genres: genres.length ? genres : undefined,
-            tags: tags.length ? tags : undefined
-          }
-        };
-
         // Simpler YAML builder for our limited use
+        function esc(str) {
+          return String(str || '').replace(/"/g, '\\"');
+        }
+
         let yaml = '---\n';
-        yaml += `title: "${this.title.replace(/"/g, '\\"')}"\n`;
-        yaml += `artist: "${this.artist.replace(/"/g, '\\"')}"\n`;
+        yaml += `title: "${esc(this.title)}"\n`;
+        yaml += `artist: "${esc(this.artist)}"\n`;
         yaml += `year: ${Number.isInteger(this.year) ? this.year : parseInt(this.year) || new Date().getFullYear()}\n\n`;
 
-        if (this.tapeType) yaml += `physicalProperties:\n  tapeType: "${this.tapeType}"\n`;
-        if (this.shelf) yaml += `location:\n  physical:\n    shelf: "${this.shelf.replace(/"/g, '\\"')}"\n`;
+        if (this.tapeType) yaml += `physicalProperties:\n  tapeType: "${esc(this.tapeType)}"\n`;
+        if (this.shelf) yaml += `location:\n  physical:\n    shelf: "${esc(this.shelf)}"\n`;
 
-        yaml += `recordingContent:\n  type: "personal-recording"\n  sideA: []\n  sideB: []\n`;
+        // Recording content
+        if (this.sideA.length > 0 || this.sideB.length > 0) {
+          yaml += `recordingContent:\n  type: "${esc(this.recordingType)}"\n`;
 
+          if (this.sideA.length > 0) {
+            yaml += `  sideA:`;
+            this.sideA.forEach(item => {
+              yaml += `\n    - type: "${esc(item.type)}"`;
+              yaml += `\n      title: "${esc(item.title)}"`;
+              if (item.artist) yaml += `\n      artist: "${esc(item.artist)}"`;
+              if (item.duration) yaml += `\n      duration: "${esc(item.duration)}"`;
+              if (item.notes) yaml += `\n      notes: "${esc(item.notes)}"`;
+            });
+            yaml += '\n';
+          } else {
+            yaml += `  sideA: []\n`;
+          }
+
+          if (this.sideB.length > 0) {
+            yaml += `  sideB:`;
+            this.sideB.forEach(item => {
+              yaml += `\n    - type: "${esc(item.type)}"`;
+              yaml += `\n      title: "${esc(item.title)}"`;
+              if (item.artist) yaml += `\n      artist: "${esc(item.artist)}"`;
+              if (item.duration) yaml += `\n      duration: "${esc(item.duration)}"`;
+              if (item.notes) yaml += `\n      notes: "${esc(item.notes)}"`;
+            });
+            yaml += '\n';
+          } else {
+            yaml += `  sideB: []\n`;
+          }
+        } else {
+          yaml += `recordingContent:\n  type: "${esc(this.recordingType)}"\n  sideA: []\n  sideB: []\n`;
+        }
+
+        // Artwork
+        if (this.jcardStatus || this.jcardImage || this.labelSideAStatus || this.labelSideBStatus) {
+          yaml += `artwork:\n  jcard:`;
+          if (this.jcardStatus) yaml += `\n    status: "${esc(this.jcardStatus)}"`;
+          if (this.jcardImage) yaml += `\n    image: "${esc(this.jcardImage)}"`;
+          yaml += '\n';
+          yaml += `  labels:`;
+          yaml += `\n    sideA:`;
+          if (this.labelSideAStatus) yaml += `\n      status: "${esc(this.labelSideAStatus)}"`;
+          yaml += '\n    sideB:';
+          if (this.labelSideBStatus) yaml += `\n      status: "${esc(this.labelSideBStatus)}"`;
+          yaml += '\n';
+        }
+
+        // Metadata
         if (genres.length) {
           yaml += '\nmetadata:\n  genres:';
-          genres.forEach(g => { yaml += `\n    - "${g.replace(/"/g, '\\"')}"`; });
+          genres.forEach(g => { yaml += `\n    - "${esc(g)}"`; });
         }
         if (tags.length) {
           if (!genres.length) yaml += '\nmetadata:';
           yaml += '\n  tags:';
-          tags.forEach(t => { yaml += `\n    - "${t.replace(/"/g, '\\"')}"`; });
+          tags.forEach(t => { yaml += `\n    - "${esc(t)}"`; });
         }
 
-        if (this.notes) yaml += `\n\n---\n\n${this.notes}\n`;
+        // Project
+        if (this.projectStatus || this.tasks.length > 0) {
+          yaml += `\nproject:\n  status: "${esc(this.projectStatus)}"`;
+          if (this.tasks.length > 0) {
+            yaml += `\n  tasks:`;
+            this.tasks.forEach(task => {
+              yaml += `\n    - type: "${esc(task.type)}"\n      status: "${esc(task.status)}"`;
+            });
+            yaml += '\n';
+          }
+        }
+
+        if (this.notes) yaml += `\n---\n\n${this.notes}\n`;
         else yaml += '\n---\n\n';
 
         this.generated = yaml;
